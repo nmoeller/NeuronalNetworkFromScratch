@@ -12,7 +12,16 @@ class FullyConnectedLayer(Layer):
 
 
     def forward_pass(self, inputs : np.ndarray) -> np.ndarray:
-        pass
+        self.input = inputs
+        self.output = np.dot(inputs, self.weights)
+        return self.output
     
     def backward_pass(self, output_error, learning_rate):
-        pass
+        input_error = np.dot(output_error, self.weights.T)
+        #Calculate Error for each Weight
+        weights_error = np.dot(self.input.T, output_error)
+        #Adjust Each Weight by its Error and Learning Rate
+        self.weights -= learning_rate * weights_error
+        
+        #Distribute Error to Previous Layer
+        return input_error

@@ -23,14 +23,46 @@ class Network():
         self.layers.append(layer)
 
     def inference(self, input_data : np.ndarray) -> np.ndarray:
-        pass
+        output : np.ndarray = input_data
+        for layer in self.layers:
+            output = layer.forward_pass(output)
+        return output
     
     def set_evaluation_data(self, x_test : np.ndarray, y_test : np.ndarray):
         self.x_test = x_test
         self.y_test = y_test
 
     def evaluate(self):
-        pass
+        samples = len(self.x_test)
+        correct = 0
+        for i in range(samples):
+            x = self.x_test[i]
+            y = self.y_test[i]
+            prediction = self.inference(x)
+            if np.argmax(prediction) == np.argmax(y):
+                correct += 1
+        accuracy = correct / samples
+        self.accuracy_list.append(accuracy)
     
     def fit(self, x_train : np.ndarray, y_train : np.ndarray, epochs : int, learning_rate : float):
-        pass
+        samples = len(x_train)
+
+        for i in range(epochs):
+            err = 0
+            for j in range(samples):
+
+                output = x_train[j]
+                for layer in self.layers:
+                    output = layer.forward_pass(output)
+
+                err += self.loss(y_train[j], output)
+
+                error = self.loss_prime(y_train[j], output)
+                for layer in reversed(self.layers):
+                    error = layer.backward_pass(error, learning_rate)
+
+            err /= samples
+            if self.x_test is not None and self.y_test is not None:
+                self.evaluate()
+            self.error_list.append(err)
+            print('epoch %d/%d   error=%f' % (i+1, epochs, err))

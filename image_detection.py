@@ -26,17 +26,15 @@ y_test = to_categorical(y_test)
 net = Network()
 net.addLayer(FullyConnectedLayer(28*28, 100))
 net.addLayer(ActivationLayer(sigmoid, sigmoid_derivative))
-net.addLayer(FullyConnectedLayer(100, 50))
+net.addLayer(FullyConnectedLayer(100, 100))
 net.addLayer(ActivationLayer(sigmoid, sigmoid_derivative))
-net.addLayer(FullyConnectedLayer(50, 10))
+net.addLayer(FullyConnectedLayer(100, 10))
 net.addLayer(ActivationLayer(sigmoid, sigmoid_derivative))
 
-# set evaluation data
 net.set_evaluation_data(x_test[:100], y_test[:100])
 # train
 net.fit(x_train[:4000], y_train[:4000], epochs=10, learning_rate=0.5)
 
-# infrence
 test_image_index = 0
 result = net.inference(x_test[test_image_index])
 

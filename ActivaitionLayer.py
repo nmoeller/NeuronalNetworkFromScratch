@@ -12,7 +12,8 @@ class ActivationLayer(Layer):
         self.activation_derivative = activation_derivative
 
     def forward_pass(self, inputs : np.ndarray) -> np.ndarray:
-        pass
+        self.input = inputs
+        return self.activation(inputs)
     
     def backward_pass(self, output_error : np.ndarray, learning_rate : float) -> np.ndarray:
-        pass
+        return self.activation_derivative(self.input) * output_error
